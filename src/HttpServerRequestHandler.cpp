@@ -23,7 +23,7 @@ class RequestHandler : public CivetHandler
 		const struct mg_request_info *req_info = mg_get_request_info(conn);
 
 		HttpServerRequestHandler* httpServer = (HttpServerRequestHandler*)server;
-
+		std::cout << "body:" << req_info->request_uri << std::endl;
 		httpFunction fct = httpServer->getFunction(req_info->request_uri);
 		if (fct != NULL)
 		{
