@@ -259,6 +259,7 @@ const Json::Value PeerConnectionManager::getIceServers(const std::string& client
 	} else {
 		stunurl += stunurl_;
 	}
+	RTC_LOG(INFO) << "Stun Server:" << stunurl;
 	url["url"] = stunurl;
 
 	Json::Value urls;
@@ -271,8 +272,9 @@ const Json::Value PeerConnectionManager::getIceServers(const std::string& client
 		if (turnuser_.length() > 0) turn["username"] = turnuser_;
 		if (turnpass_.length() > 0) turn["credential"] = turnpass_;
 		urls.append(turn);
+		RTC_LOG(INFO) << "Turn Server:" << turn;
 	}
-
+	
 	Json::Value iceServers;
 	iceServers["iceServers"] = urls;
 
