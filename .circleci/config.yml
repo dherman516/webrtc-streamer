@@ -99,7 +99,7 @@ jobs:
             EOF
       - add_ssh_keys:
           fingerprints:
-            - "9d:ef:66:ee:e1:95:2b:e6:98:05:01:ac:48:5c:53:be"
+            - "7a:7d:5c:25:99:a5:75:28:ba:42:28:29:1c:77:e5:9c"
       - deploy:
           name: "Deploy to Heroku"
           command: git add -f webrtc-streamer && git -c user.name='ci' -c user.email='ci@email.org' commit -m 'force add for heroku deployement' && git push --force git@heroku.com:rtsp2webrtc.git HEAD:refs/heads/master
