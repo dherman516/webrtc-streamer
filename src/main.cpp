@@ -56,12 +56,9 @@ int main(int argc, char* argv[])
 
 			case 't': turnurl = optarg; break;
 			case 'S': localstunurl = optarg ? optarg : defaultlocalstunurl; stunurl = localstunurl; break;
-			case 's': localstunurl = NULL; 
-				  if (optarg) { 
-					stunurl = optarg;
-					std::cout << "Stun Server0:" << stunurl << std::endl; 
-				  }
-				  std::cout << "Stun Server1:" << stunurl << std::endl; 
+			case 's': localstunurl = NULL; 				  
+				  stunurl = optarg;
+				  std::cout << "Stun Server0:" << stunurl << std::endl; 				  
 				  break;
 			
 			case 'a': audioLayer = optarg ? (webrtc::AudioDeviceModule::AudioLayer)atoi(optarg) : webrtc::AudioDeviceModule::kDummyAudio; break;
