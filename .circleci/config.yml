@@ -28,14 +28,22 @@ jobs:
           command: |
               if [ ! -e /depot_tools ]; then
                  apt-get update;
-                 apt-get install -y --no-install-recommends autoconf automake libtool git make g++ xz-utils;
+                 apt-get install -y --no-install-recommends autoconf automake libtool git make g++ xz-utils libgtk-3-dev libasound2-dev;
                  git clone --depth 1 https://chromium.googlesource.com/chromium/tools/depot_tools.git /depot_tools;
               fi  
+      - run: 
+          name: Install Linero
+          command: |
+              if [ ! -e /opt/gcc-linaro-6.4.1-2017.11-x86_64_arm-linux-gnueabihf ]; then
+                 wget -qO- https://releases.linaro.org/components/toolchain/binaries/latest-6/arm-linux-gnueabihf/gcc-linaro-6.4.1-2017.11-x86_64_arm-linux-gnueabihf.tar.xz  | tar xJ -C /opt          
+              fi  
+      - run: echo 'export PATH=/opt/gcc-linaro-6.4.1-2017.11-x86_64_arm-linux-gnueabihf/bin:$PATH' >> $BASH_ENV
+      - run: echo 'export PATH=/depot_tools:$PATH' >> $BASH_ENV
       - save_cache:
           key: deps1-{{ .Branch }}-{{ checksum "requirements/depot_tools.txt" }}
           paths:
             - "/depot_tools"
-      - run: echo 'export PATH=/depot_tools:$PATH' >> $BASH_ENV            
+            - "/opt/gcc-linaro-6.4.1-2017.11-x86_64_arm-linux-gnueabihf"            
       - restore_cache:
           key: deps2-{{ .Branch }}-{{ checksum "requirements/webrtc.txt" }}   
       - run:
@@ -46,11 +54,10 @@ jobs:
                  fetch --no-history --nohooks webrtc ;
                  cd ${WEBRTCROOT};
                  sed -i -e "s|'src/resources'],|'src/resources'],'condition':'rtc_include_tests==true',|" src/DEPS ;
+                 ${WEBRTCROOT}/src/build/linux/sysroot_scripts/install-sysroot.py --arch=arm
+                 
               fi
-      - save_cache:
-          key: deps2-{{ .Branch }}-{{ checksum "requirements/webrtc.txt" }}
-          paths:
-            - "/webrtc"
+
       - persist_to_workspace:
           root: /
           paths:
@@ -75,8 +82,7 @@ jobs:
     steps:
       - attach_workspace:
           at: /          
-      - checkout
-      - run: apt-get update; apt-get install -y --no-install-recommends autoconf automake libtool git make g++ xz-utils libgtk-3-dev libasound2-dev
+      - checkout    
       - run: echo 'export PATH=/depot_tools:$PATH' >> $BASH_ENV
       - run: cd ${WEBRTCROOT} && gclient sync 
       - run: cd ${WEBRTCROOT}/src && gn gen ${GYP_GENERATOR_OUTPUT}/out/Release --args="${GNARGSCOMMON} ${GNARGS}" 
@@ -108,12 +114,8 @@ jobs:
       - attach_workspace:
           at: /
       - checkout
-      - run: apt-get update; apt-get install -y --no-install-recommends autoconf automake libtool git make g++ xz-utils          
-      - run: wget -qO- https://releases.linaro.org/components/toolchain/binaries/latest-6/arm-linux-gnueabihf/gcc-linaro-6.4.1-2017.11-x86_64_arm-linux-gnueabihf.tar.xz  | tar xJ -C /opt 
       - run: echo 'export PATH=/opt/gcc-linaro-6.4.1-2017.11-x86_64_arm-linux-gnueabihf/bin:$PATH' >> $BASH_ENV
       - run: echo 'export PATH=/depot_tools:$PATH' >> $BASH_ENV
-      - run: ${WEBRTCROOT}/src/build/linux/sysroot_scripts/install-sysroot.py --arch=arm
-      - run: cd ${WEBRTCROOT} && gclient sync 
       - run: cd ${WEBRTCROOT}/src && gn gen ${GYP_GENERATOR_OUTPUT}/out/Release --args="${GNARGSCOMMON} ${GNARGS}"
       - run: make live555 alsa-lib
       - run: cd ${WEBRTCROOT}/src && ( ninja -C ${GYP_GENERATOR_OUTPUT}/out/Release jsoncpp rtc_json webrtc builtin_audio_decoder_factory || ninja -C ${GYP_GENERATOR_OUTPUT}/out/Release jsoncpp rtc_json webrtc builtin_audio_decoder_factory || ninja -C ${GYP_GENERATOR_OUTPUT}/out/Release jsoncpp rtc_json webrtc builtin_audio_decoder_factory)
@@ -136,6 +138,10 @@ jobs:
     steps:
       - attach_workspace:
           at: /
+      - save_cache:
+          key: deps2-{{ .Branch }}-{{ checksum "requirements/webrtc.txt" }}
+          paths:
+            - "/webrtc"
       - store_artifacts:
           path: /distrib
           
