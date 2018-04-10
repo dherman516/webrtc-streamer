@@ -32,7 +32,7 @@ jobs:
       - save_cache:
           key: deps1-{{ .Branch }}-{{ checksum "requirements/depot_tools.txt" }}
           paths:
-            - "/depot_dools"
+            - "/depot_tools"
       - run: echo 'export PATH=/depot_tools:$PATH' >> $BASH_ENV            
       - restore_cache:
           key: deps2-{{ .Branch }}-{{ checksum "requirements/webrtc.txt" }}   
