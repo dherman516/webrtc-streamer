@@ -120,6 +120,7 @@ int main(int argc, char* argv[])
 	rtc::InitializeSSL();
 
 	// webrtc server
+	RTC_LOG(INFO) << "Stun Server 1:" << stunurl;
 	PeerConnectionManager webRtcServer(stunurl, turnurl, urlList, audioLayer);
 	if (!webRtcServer.InitializePeerConnection())
 	{
