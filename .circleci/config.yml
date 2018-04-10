@@ -32,7 +32,7 @@ jobs:
                  git clone --depth 1 https://chromium.googlesource.com/chromium/tools/depot_tools.git /depot_tools;
               fi  
       - run: 
-          name: Install Linero
+          name: Install Linaro
           command: |
               if [ ! -e /gcc-linaro-6.4.1-2017.11-x86_64_arm-linux-gnueabihf ]; then
                  wget -qO- https://releases.linaro.org/components/toolchain/binaries/latest-6/arm-linux-gnueabihf/gcc-linaro-6.4.1-2017.11-x86_64_arm-linux-gnueabihf.tar.xz  | tar xJ -C /          
@@ -54,8 +54,6 @@ jobs:
                  fetch --no-history --nohooks webrtc ;
                  cd ${WEBRTCROOT};
                  sed -i -e "s|'src/resources'],|'src/resources'],'condition':'rtc_include_tests==true',|" src/DEPS ;
-                 ${WEBRTCROOT}/src/build/linux/sysroot_scripts/install-sysroot.py --arch=arm
-                 
               fi
 
       - persist_to_workspace:
@@ -116,6 +114,7 @@ jobs:
       - checkout
       - run: echo 'export PATH=/gcc-linaro-6.4.1-2017.11-x86_64_arm-linux-gnueabihf/bin:$PATH' >> $BASH_ENV
       - run: echo 'export PATH=/depot_tools:$PATH' >> $BASH_ENV
+      - run: ${WEBRTCROOT}/src/build/linux/sysroot_scripts/install-sysroot.py --arch=arm
       - run: cd ${WEBRTCROOT}/src && gn gen ${GYP_GENERATOR_OUTPUT}/out/Release --args="${GNARGSCOMMON} ${GNARGS}"
       - run: make live555 alsa-lib
       - run: cd ${WEBRTCROOT}/src && ( ninja -C ${GYP_GENERATOR_OUTPUT}/out/Release jsoncpp rtc_json webrtc builtin_audio_decoder_factory || ninja -C ${GYP_GENERATOR_OUTPUT}/out/Release jsoncpp rtc_json webrtc builtin_audio_decoder_factory || ninja -C ${GYP_GENERATOR_OUTPUT}/out/Release jsoncpp rtc_json webrtc builtin_audio_decoder_factory)
