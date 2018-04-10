@@ -36,7 +36,7 @@ jobs:
       WEBRTCROOT: /webrtc 
 
     steps:  
-    - run: echo 'export PATH=/depot_tools:$PATH' >> $BASH_ENV
+     - run: echo 'export PATH=/depot_tools:$PATH' >> $BASH_ENV
      - persist_to_workspace:
         root: /
         paths:
