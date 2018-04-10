@@ -47,10 +47,10 @@ jobs:
           paths:
             - "/webrtc"
       - persist_to_workspace:
-        root: /
-        paths:
-          - depot_tools 
-          - webrtc
+          root: /
+          paths:
+            - depot_tools 
+            - webrtc
 
             
             
