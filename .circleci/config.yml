@@ -34,16 +34,16 @@ jobs:
       - run: 
           name: Install Linero
           command: |
-              if [ ! -e /opt/gcc-linaro-6.4.1-2017.11-x86_64_arm-linux-gnueabihf ]; then
-                 wget -qO- https://releases.linaro.org/components/toolchain/binaries/latest-6/arm-linux-gnueabihf/gcc-linaro-6.4.1-2017.11-x86_64_arm-linux-gnueabihf.tar.xz  | tar xJ -C /opt          
+              if [ ! -e /gcc-linaro-6.4.1-2017.11-x86_64_arm-linux-gnueabihf ]; then
+                 wget -qO- https://releases.linaro.org/components/toolchain/binaries/latest-6/arm-linux-gnueabihf/gcc-linaro-6.4.1-2017.11-x86_64_arm-linux-gnueabihf.tar.xz  | tar xJ -C /          
               fi  
-      - run: echo 'export PATH=/opt/gcc-linaro-6.4.1-2017.11-x86_64_arm-linux-gnueabihf/bin:$PATH' >> $BASH_ENV
+      - run: echo 'export PATH=/gcc-linaro-6.4.1-2017.11-x86_64_arm-linux-gnueabihf/bin:$PATH' >> $BASH_ENV
       - run: echo 'export PATH=/depot_tools:$PATH' >> $BASH_ENV
       - save_cache:
           key: deps1-{{ .Branch }}-{{ checksum "requirements/depot_tools.txt" }}
           paths:
             - "/depot_tools"
-            - "/opt/gcc-linaro-6.4.1-2017.11-x86_64_arm-linux-gnueabihf"            
+            - "/gcc-linaro-6.4.1-2017.11-x86_64_arm-linux-gnueabihf"            
       - restore_cache:
           key: deps2-{{ .Branch }}-{{ checksum "requirements/webrtc.txt" }}   
       - run:
@@ -114,7 +114,7 @@ jobs:
       - attach_workspace:
           at: /
       - checkout
-      - run: echo 'export PATH=/opt/gcc-linaro-6.4.1-2017.11-x86_64_arm-linux-gnueabihf/bin:$PATH' >> $BASH_ENV
+      - run: echo 'export PATH=/gcc-linaro-6.4.1-2017.11-x86_64_arm-linux-gnueabihf/bin:$PATH' >> $BASH_ENV
       - run: echo 'export PATH=/depot_tools:$PATH' >> $BASH_ENV
       - run: cd ${WEBRTCROOT}/src && gn gen ${GYP_GENERATOR_OUTPUT}/out/Release --args="${GNARGSCOMMON} ${GNARGS}"
       - run: make live555 alsa-lib
