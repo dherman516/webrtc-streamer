@@ -19,9 +19,10 @@ jobs:
     environment:
       WEBRTCROOT: /webrtc 
 
-    steps:  
+    steps: 
+      - checkout
       - restore_cache:
-          key: deps1-{{ .Branch }}-{{ checksum "/depot_tools/README.md" }}   
+          key: deps1-{{ .Branch }}-{{ checksum "requirements/depot_tools.txt" }}   
       - run:
           name: Install Depot Tools
           command: |
@@ -29,12 +30,12 @@ jobs:
               apt-get install -y --no-install-recommends autoconf automake libtool git make g++ xz-utils
               git clone --depth 1 https://chromium.googlesource.com/chromium/tools/depot_tools.git /depot_tools      
       - save_cache:
-          key: deps1-{{ .Branch }}-{{ checksum "/depot_tools/README.md" }}
+          key: deps1-{{ .Branch }}-{{ checksum "requirements/depot_tools.txt" }}
           paths:
             - "/depot_dools"
       - run: echo 'export PATH=/depot_tools:$PATH' >> $BASH_ENV            
       - restore_cache:
-          key: deps2-{{ .Branch }}-{{ checksum "/webrtc/src/PATENTS" }}   
+          key: deps2-{{ .Branch }}-{{ checksum "requirements/webrtc.txt" }}   
       - run:
           name: Install webrtc Tools
           command: |
@@ -43,7 +44,7 @@ jobs:
               cd ${WEBRTCROOT}
               sed -i -e "s|'src/resources'],|'src/resources'],'condition':'rtc_include_tests==true',|" src/DEPS 
       - save_cache:
-          key: deps2-{{ .Branch }}-{{ checksum "/webrtc/src/PATENTS" }}
+          key: deps2-{{ .Branch }}-{{ checksum "requirements/webrtc.txt" }}
           paths:
             - "/webrtc"
       - persist_to_workspace:
