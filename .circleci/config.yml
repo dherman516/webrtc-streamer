@@ -46,8 +46,7 @@ jobs:
           key: deps2-{{ .Branch }}-{{ checksum "/webrtc/src/PATENTS" }}
           paths:
             - "/webrtc"
-      
-     - persist_to_workspace:
+      - persist_to_workspace:
         root: /
         paths:
           - depot_tools 
