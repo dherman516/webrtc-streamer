@@ -26,9 +26,11 @@ jobs:
       - run:
           name: Install Depot Tools
           command: |
-              apt-get update
-              apt-get install -y --no-install-recommends autoconf automake libtool git make g++ xz-utils
-              git clone --depth 1 https://chromium.googlesource.com/chromium/tools/depot_tools.git /depot_tools      
+              if [ ! -e /depot_tools ]; then
+                 apt-get update;
+                 apt-get install -y --no-install-recommends autoconf automake libtool git make g++ xz-utils;
+                 git clone --depth 1 https://chromium.googlesource.com/chromium/tools/depot_tools.git /depot_tools;
+              fi  
       - save_cache:
           key: deps1-{{ .Branch }}-{{ checksum "requirements/depot_tools.txt" }}
           paths:
@@ -39,10 +41,12 @@ jobs:
       - run:
           name: Install webrtc Tools
           command: |
-              mkdir /webrtc && cd /webrtc 
-              fetch --no-history --nohooks webrtc 
-              cd ${WEBRTCROOT}
-              sed -i -e "s|'src/resources'],|'src/resources'],'condition':'rtc_include_tests==true',|" src/DEPS 
+              if [ ! -e /webrtc ]; then
+                 mkdir /webrtc && cd /webrtc ;
+                 fetch --no-history --nohooks webrtc ;
+                 cd ${WEBRTCROOT};
+                 sed -i -e "s|'src/resources'],|'src/resources'],'condition':'rtc_include_tests==true',|" src/DEPS ;
+              fi
       - save_cache:
           key: deps2-{{ .Branch }}-{{ checksum "requirements/webrtc.txt" }}
           paths:
