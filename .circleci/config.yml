@@ -8,37 +8,41 @@ jobs:
   # -------------------------------------
   # dowload common tools 
   # -------------------------------------
+ 
+
+  dependencies:
+    pre:
+     - if [ ! -e /depot_tools/fetch ]; then
+        apt-get update; apt-get install -y --no-install-recommends autoconf automake libtool git make g++ xz-utils;
+        git clone --depth 1 https://chromium.googlesource.com/chromium/tools/depot_tools.git /depot_tools      ;
+       else
+        echo "Depot Tools Found";
+       fi;
+     - if [ ! -e /webrtc/src/PATENTS ]; then
+        mkdir /webrtc && cd /webrtc && fetch --no-history --nohooks webrtc 
+        cd ${WEBRTCROOT} && sed -i -e "s|'src/resources'],|'src/resources'],'condition':'rtc_include_tests==true',|" src/DEPS 
+       else
+        echo "WebRTC Found";
+       fi;     
+     
+
+    cache_directories:
+     - /depot_tools
+     - /webrtc
   setup:
     <<: *defaults
     
     environment:
       WEBRTCROOT: /webrtc 
 
-    dependencies:
-      pre:
-       - if [ ! -e /depot_tools/fetch ]; then
-          apt-get update; apt-get install -y --no-install-recommends autoconf automake libtool git make g++ xz-utils;
-          git clone --depth 1 https://chromium.googlesource.com/chromium/tools/depot_tools.git /depot_tools      ;
-         else
-          echo "Depot Tools Found";
-         fi;
-       - if [ ! -e ${WEBRTCROOT}/src/PATENTS ]; then
-          mkdir ${WEBRTCROOT} && cd ${WEBRTCROOT} && fetch --no-history --nohooks webrtc 
-          cd ${WEBRTCROOT} && sed -i -e "s|'src/resources'],|'src/resources'],'condition':'rtc_include_tests==true',|" src/DEPS 
-         else
-          echo "WebRTC Found";
-         fi;     
-       - run: echo 'export PATH=/depot_tools:$PATH' >> $BASH_ENV
- 
-       - persist_to_workspace:
-          root: /
-          paths:
-            - depot_tools 
-            - webrtc
-      cache_directories:
-       - /depot_tools
-       - /webrtc
-     
+    steps:  
+    - run: echo 'export PATH=/depot_tools:$PATH' >> $BASH_ENV
+     - persist_to_workspace:
+        root: /
+        paths:
+          - depot_tools 
+          - webrtc
+
             
             
   # -------------------------------------
