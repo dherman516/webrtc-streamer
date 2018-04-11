@@ -53,9 +53,10 @@ jobs:
                  fetch --no-history --nohooks webrtc ;
                  cd ${WEBRTCROOT};
                  sed -i -e "s|'src/resources'],|'src/resources'],'condition':'rtc_include_tests==true',|" src/DEPS ;
+                 gclient sync
               fi
       - save_cache:
-          key: deps2-{{ .Branch }}-{{ checksum "requirements/webrtc.txt" }}   
+          key: deps3-{{ .Branch }}-{{ checksum "requirements/webrtc.txt" }}   
           paths:
             - "/webrtc"
       - persist_to_workspace:
@@ -84,7 +85,7 @@ jobs:
           at: /          
       - checkout    
       - run: echo 'export PATH=/opt/depot_tools:$PATH' >> $BASH_ENV
-      - run: cd ${WEBRTCROOT} && gclient sync 
+#     - run: cd ${WEBRTCROOT} && gclient sync 
       - run: cd ${WEBRTCROOT}/src && gn gen ${GYP_GENERATOR_OUTPUT}/out/Release --args="${GNARGSCOMMON} ${GNARGS}" 
       - run: cd ${WEBRTCROOT}/src && ninja -C ${GYP_GENERATOR_OUTPUT}/out/Release jsoncpp rtc_json webrtc builtin_audio_decoder_factory
       - run: make live555
@@ -117,6 +118,7 @@ jobs:
       - run: apt-get update; apt-get install -y --no-install-recommends autoconf automake libtool git make g++ xz-utils libgtk-3-dev libasound2-dev
       - run: echo 'export PATH=/opt/gcc-linaro-6.4.1-2017.11-x86_64_arm-linux-gnueabihf/bin:$PATH' >> $BASH_ENV
       - run: echo 'export PATH=/opt/depot_tools:$PATH' >> $BASH_ENV
+#     - run: cd ${WEBRTCROOT} && gclient sync
       - run: ${WEBRTCROOT}/src/build/linux/sysroot_scripts/install-sysroot.py --arch=arm
       - run: cd ${WEBRTCROOT}/src && gn gen ${GYP_GENERATOR_OUTPUT}/out/Release --args="${GNARGSCOMMON} ${GNARGS}"
       - run: make live555 alsa-lib
@@ -140,10 +142,6 @@ jobs:
     steps:
       - attach_workspace:
           at: /
-      - save_cache:
-          key: deps2-{{ .Branch }}-{{ checksum "requirements/webrtc.txt" }}
-          paths:
-            - "/webrtc"
       - store_artifacts:
           path: /distrib
           
