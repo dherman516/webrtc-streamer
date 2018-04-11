@@ -17,8 +17,10 @@ jobs:
     <<: *defaults
     
     environment:
+      TAR_OPTIONS: --no-same-owner
       WEBRTCROOT: /webrtc 
-
+      GYP_GENERATOR_OUTPUT: "x86_64"
+      
     steps: 
       - checkout
       - restore_cache:
@@ -57,7 +59,8 @@ jobs:
                  cd ${WEBRTCROOT};                 
                  sed -i -e "s|'src/resources'],|'src/resources'],'condition':'rtc_include_tests==true',|" src/DEPS ;
               fi
-      - run: cd /webrtc; gclient sync
+              
+      - run: cd ${WEBRTCROOT}; gclient sync
       - save_cache:
           key: deps3-{{ .Branch }}-{{ checksum "requirements/webrtc.txt" }}   
           paths:
