@@ -282,8 +282,8 @@ const Json::Value PeerConnectionManager::getIceServers(const std::string& client
 	} else {
 		stunurl += stunurl_;
 	}
-	if (stunuser_.length() > 0) stunurl["username"] = stunuser_;
-	if (stunpass_.length() > 0) stunurl["credential"] = stunpass_;
+	if (stunuser_.length() > 0) url["username"] = stunuser_;
+	if (stunpass_.length() > 0) url["credential"] = stunpass_;
 	RTC_LOG(INFO) << "Stun Server:" << stunurl;
 	url["url"] = stunurl;
 
