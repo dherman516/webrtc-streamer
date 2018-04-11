@@ -56,7 +56,7 @@ int main(int argc, char* argv[])
 
 			case 't': turnurl = optarg; break;
 			case 'S': localstunurl = optarg ? optarg : defaultlocalstunurl; stunurl = localstunurl; break;
-			case 's': stunurl = optarg; break;
+			case 's': localstunurl = NULL; if (optarg) stunurl = optarg; break;
 			
 			case 'a': audioLayer = optarg ? (webrtc::AudioDeviceModule::AudioLayer)atoi(optarg) : webrtc::AudioDeviceModule::kDummyAudio; break;
 			case 'n': streamName = optarg; break;
@@ -120,7 +120,6 @@ int main(int argc, char* argv[])
 	rtc::InitializeSSL();
 
 	// webrtc server
-	RTC_LOG(INFO) << "Stun Server 2:" << stunurl;
 	PeerConnectionManager webRtcServer(stunurl, turnurl, urlList, audioLayer);
 	if (!webRtcServer.InitializePeerConnection())
 	{
@@ -178,4 +177,3 @@ int main(int argc, char* argv[])
 	rtc::CleanupSSL();
 	return 0;
 }
-
