@@ -24,11 +24,14 @@ jobs:
       - restore_cache:
           key: deps1-{{ .Branch }}-{{ checksum "requirements/depot_tools.txt" }}   
       - run:
+          name: Install Ubuntu pieces via apt
+          command: |          
+              apt-get update;
+              apt-get install -y --no-install-recommends autoconf automake libtool xz git make g++ xz-utils libgtk-3-dev libasound2-dev;
+      - run:
           name: Install Depot Tools
           command: |
               if [ ! -e /opt/depot_tools ]; then
-                 apt-get update;
-                 apt-get install -y --no-install-recommends autoconf automake libtool xz git make g++ xz-utils libgtk-3-dev libasound2-dev;
                  git clone --depth 1 https://chromium.googlesource.com/chromium/tools/depot_tools.git /opt/depot_tools;
               fi  
       - run: 
@@ -48,8 +51,8 @@ jobs:
       - run:
           name: Install webrtc Tools
           command: |
-              if [ ! -e /webrtc ]; then
-                 mkdir /webrtc && cd /webrtc ;
+              if [ ! -e ${WEBRTCROOT} ]; then
+                 mkdir ${WEBRTCROOT} && cd ${WEBRTCROOT} ;
                  fetch --no-history --nohooks webrtc ;
                  cd ${WEBRTCROOT};                 
                  sed -i -e "s|'src/resources'],|'src/resources'],'condition':'rtc_include_tests==true',|" src/DEPS ;
@@ -62,8 +65,9 @@ jobs:
       - persist_to_workspace:
           root: /
           paths:            
-            - webrtc
+            - ${WEBRTCROOT}
             - opt
+            - ${CIRCLE_WORKING_DIRECTORY}
 
             
             
@@ -83,8 +87,12 @@ jobs:
     steps:
       - attach_workspace:
           at: /          
-      - checkout    
       - run: echo 'export PATH=/opt/depot_tools:$PATH' >> $BASH_ENV
+      - run:
+          name: Install Ubuntu pieces via apt
+          command: |          
+              apt-get update;
+              apt-get install -y --no-install-recommends autoconf automake libtool xz git make g++ xz-utils libgtk-3-dev libasound2-dev;
 #     - run: cd ${WEBRTCROOT} && gclient sync 
       - run: cd ${WEBRTCROOT}/src && gn gen ${GYP_GENERATOR_OUTPUT}/out/Release --args="${GNARGSCOMMON} ${GNARGS}" 
       - run: cd ${WEBRTCROOT}/src && ninja -C ${GYP_GENERATOR_OUTPUT}/out/Release jsoncpp rtc_json webrtc builtin_audio_decoder_factory
@@ -114,8 +122,11 @@ jobs:
     steps:
       - attach_workspace:
           at: /
-      - checkout
-      - run: apt-get update; apt-get install -y --no-install-recommends autoconf automake libtool git make g++ xz-utils libgtk-3-dev libasound2-dev
+      - run:
+          name: Install Ubuntu pieces via apt
+          command: |          
+              apt-get update;
+              apt-get install -y --no-install-recommends autoconf automake libtool xz git make g++ xz-utils libgtk-3-dev libasound2-dev;
       - run: echo 'export PATH=/opt/gcc-linaro-6.4.1-2017.11-x86_64_arm-linux-gnueabihf/bin:$PATH' >> $BASH_ENV
       - run: echo 'export PATH=/opt/depot_tools:$PATH' >> $BASH_ENV
 #     - run: cd ${WEBRTCROOT} && gclient sync
