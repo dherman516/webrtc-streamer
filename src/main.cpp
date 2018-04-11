@@ -44,7 +44,7 @@ int main(int argc, char* argv[])
 	httpAddress.append(httpPort);
 
 	int c = 0;
-	while ((c = getopt (argc, argv, "hVv::" "c:H:w:T:A:" "t:S::s::" "a::n:u:")) != -1)
+	while ((c = getopt (argc, argv, "hVv::" "c:H:w:T:A:" "t:S::s::SS:" "a::n:u:")) != -1)
 	{
 		switch (c)
 		{
@@ -57,7 +57,7 @@ int main(int argc, char* argv[])
 			case 't': turnurl = optarg; break;
 			case 'S': localstunurl = optarg ? optarg : defaultlocalstunurl; stunurl = localstunurl; break;
 			case 's': localstunurl = NULL; if (optarg) stunurl = optarg; break;
-			
+			case 'SS': localstunurl = NULL; if (optarg) stunurl = optarg; break;
 			case 'a': audioLayer = optarg ? (webrtc::AudioDeviceModule::AudioLayer)atoi(optarg) : webrtc::AudioDeviceModule::kDummyAudio; break;
 			case 'n': streamName = optarg; break;
 			case 'u': {
@@ -91,6 +91,7 @@ int main(int argc, char* argv[])
 			
 				std::cout << "\t -S[stun_address]   : start embeded STUN server bind to address (default " << defaultlocalstunurl << ")" << std::endl;
 				std::cout << "\t -s[stun_address]   : use an external STUN server (default " << stunurl << ")"                    << std::endl;
+				std::cout << "\t -SS[username:password@]stun_address  : use an external Authenticated STUN server (default " << stunurl << ")"                    << std::endl;
 				std::cout << "\t -t[username:password@]turn_address : use an external TURN relay server (default disabled)"       << std::endl;
 
 				std::cout << "\t -a[audio layer]    : spefify audio capture layer to use (default:" << audioLayer << ")"          << std::endl;
