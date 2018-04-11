@@ -270,6 +270,8 @@ class PeerConnectionManager {
 		std::map<std::string, rtc::scoped_refptr<webrtc::MediaStreamInterface> >  stream_map_;
 	        std::mutex                                                                m_streamMapMutex;
 		std::string                                                               stunurl_;
+		std::string                                                               stunuser_;
+		std::string                                                               stunpass_;
 		std::string                                                               turnurl_;
 		std::string                                                               turnuser_;
 		std::string                                                               turnpass_;
