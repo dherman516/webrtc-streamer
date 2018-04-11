@@ -54,7 +54,8 @@ jobs:
                  cd ${WEBRTCROOT};
                  sed -i -e "s|'src/resources'],|'src/resources'],'condition':'rtc_include_tests==true',|" src/DEPS ;
               fi
-
+      - save_cache:
+          key: deps2-{{ .Branch }}-{{ checksum "requirements/webrtc.txt" }}   
       - persist_to_workspace:
           root: /
           paths:            
