@@ -58,6 +58,29 @@ PeerConnectionManager::PeerConnectionManager(const std::string & stunurl, const 
 	, turnurl_(turnurl)
 	, urlList_(urlList)
 {
+
+ 	if (stunurl_.length() > 0)
+	{
+		std::size_t pos = stunurl_.find('@');
+		if (pos != std::string::npos)
+		{
+			std::string credentials = stunurl_.substr(0, pos);
+			stunurl_ = stunurl_.substr(pos + 1);
+			pos = credentials.find(':');
+			if (pos == std::string::npos)
+			{
+				stunuser_ = credentials;
+			}
+			else
+			{
+				stunuser_ = credentials.substr(0, pos);
+				stunpass_ = credentials.substr(pos + 1);
+			}
+		}
+	}	
+	
+		
+		
 	if (turnurl_.length() > 0)
 	{
 		std::size_t pos = turnurl_.find('@');
@@ -259,6 +282,8 @@ const Json::Value PeerConnectionManager::getIceServers(const std::string& client
 	} else {
 		stunurl += stunurl_;
 	}
+	if (stunuser_.length() > 0) stunurl["username"] = stunuser_;
+	if (stunpass_.length() > 0) stunurl["credential"] = stunpass_;
 	RTC_LOG(INFO) << "Stun Server:" << stunurl;
 	url["url"] = stunurl;
 
