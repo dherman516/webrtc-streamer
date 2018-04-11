@@ -44,17 +44,17 @@ jobs:
           paths:
             - "/opt"            
       - restore_cache:
-          key: deps3-{{ .Branch }}-{{ checksum "requirements/webrtc.txt" }}   
+          key: deps2-{{ .Branch }}-{{ checksum "requirements/webrtc.txt" }}   
       - run:
           name: Install webrtc Tools
           command: |
               if [ ! -e /webrtc ]; then
                  mkdir /webrtc && cd /webrtc ;
                  fetch --no-history --nohooks webrtc ;
-                 cd ${WEBRTCROOT};
+                 cd ${WEBRTCROOT};                 
                  sed -i -e "s|'src/resources'],|'src/resources'],'condition':'rtc_include_tests==true',|" src/DEPS ;
-                 gclient sync
               fi
+      - run: cd /webrtc; gclient sync
       - save_cache:
           key: deps3-{{ .Branch }}-{{ checksum "requirements/webrtc.txt" }}   
           paths:
