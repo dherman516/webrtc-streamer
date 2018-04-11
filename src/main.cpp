@@ -55,9 +55,9 @@ int main(int argc, char* argv[])
 			case 'A': passwdFile = optarg; break;
 
 			case 't': turnurl = optarg; break;
-			case 'S': localstunurl = optarg ? optarg : defaultlocalstunurl; stunurl = localstunurl; break;
+			case 'LS': localstunurl = optarg ? optarg : defaultlocalstunurl; stunurl = localstunurl; break;
 			case 's': localstunurl = NULL; if (optarg) stunurl = optarg; break;
-			case 'SS': localstunurl = NULL; if (optarg) stunurl = optarg; break;
+			case 'S': localstunurl = NULL; if (optarg) stunurl = optarg; break;
 			case 'a': audioLayer = optarg ? (webrtc::AudioDeviceModule::AudioLayer)atoi(optarg) : webrtc::AudioDeviceModule::kDummyAudio; break;
 			case 'n': streamName = optarg; break;
 			case 'u': {
@@ -80,7 +80,7 @@ int main(int argc, char* argv[])
 			break;
 			case 'h':
 			default:
-				std::cout << argv[0] << " [-H http port] [-S[embeded stun address]] [-t [username:password@]turn_address] -[v[v]]  [url1]...[urln]" << std::endl;
+				std::cout << argv[0] << " [-H http port] [-LS[embeded stun address]] [-t [username:password@]turn_address] -[v[v]]  [url1]...[urln]" << std::endl;
 				std::cout << argv[0] << " [-H http port] [-s[externel stun address]] [-t [username:password@]turn_address] -[v[v]] [url1]...[urln]" << std::endl;
 				std::cout << argv[0] << " -V" << std::endl;
 				std::cout << "\t -H hostname:port   : HTTP server binding (default "   << httpAddress    << ")"                   << std::endl;
@@ -89,9 +89,9 @@ int main(int argc, char* argv[])
 				std::cout << "\t -T nbthreads       : number of threads for HTTP server"                                          << std::endl;
 				std::cout << "\t -A passwd          : passworf file for HTTP server access"                                          << std::endl;
 			
-				std::cout << "\t -S[stun_address]   : start embeded STUN server bind to address (default " << defaultlocalstunurl << ")" << std::endl;
+				std::cout << "\t -LS[stun_address]   : start embeded STUN server bind to address (default " << defaultlocalstunurl << ")" << std::endl;
 				std::cout << "\t -s[stun_address]   : use an external STUN server (default " << stunurl << ")"                    << std::endl;
-				std::cout << "\t -SS[username:password@]stun_address  : use an external Authenticated STUN server (default " << stunurl << ")"                    << std::endl;
+				std::cout << "\t -S[username:password@]stun_address  : use an external Authenticated STUN server (default " << stunurl << ")"                    << std::endl;
 				std::cout << "\t -t[username:password@]turn_address : use an external TURN relay server (default disabled)"       << std::endl;
 
 				std::cout << "\t -a[audio layer]    : spefify audio capture layer to use (default:" << audioLayer << ")"          << std::endl;
