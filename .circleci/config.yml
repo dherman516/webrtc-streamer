@@ -34,7 +34,7 @@ jobs:
       - run: 
           name: Install Linaro
           command: |
-              if [ ! -e /gcc-linaro-6.4.1-2017.11-x86_64_arm-linux-gnueabihf ]; then
+              if [ ! -e /opt/gcc-linaro-6.4.1-2017.11-x86_64_arm-linux-gnueabihf ]; then
                  wget -qO- https://releases.linaro.org/components/toolchain/binaries/latest-6/arm-linux-gnueabihf/gcc-linaro-6.4.1-2017.11-x86_64_arm-linux-gnueabihf.tar.xz  | tar xJ -C /opt          
               fi  
       - run: echo 'export PATH=/opt/gcc-linaro-6.4.1-2017.11-x86_64_arm-linux-gnueabihf/bin:$PATH' >> $BASH_ENV
