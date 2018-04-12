@@ -21,7 +21,7 @@ jobs:
       WEBRTCROOT: /webrtc 
       GYP_GENERATOR_OUTPUT: "x86_64"
       
-  steps: 
+    steps: 
       - run:
           name: Install Ubuntu pieces via apt
           command: |          
