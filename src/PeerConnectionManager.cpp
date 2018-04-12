@@ -758,8 +758,8 @@ PeerConnectionManager::PeerConnectionObserver* PeerConnectionManager::CreatePeer
 	webrtc::PeerConnectionInterface::RTCConfiguration config;
 	webrtc::PeerConnectionInterface::IceServer server;
 	server.uri = "stun:" + stunurl_;
-	server.username = "";
-	server.password = "";
+	server.username = stunuser_;
+	server.password = stunpass_;
 	config.servers.push_back(server);
 
 	if (turnurl_.length() > 0)
